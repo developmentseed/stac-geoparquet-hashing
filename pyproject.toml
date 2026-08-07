@@ -8,6 +8,13 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "httpx2>=2.9.1",
+    "obstore>=0.11.0",
+    "pandas>=3.0.5",
+    "requests>=2.34.2",
+    "rich>=15.0.0",
+    "rustac>=0.9.16",
+    "stac-hash>=0.0.1",
     "typer>=0.27.1",
 ]
 
