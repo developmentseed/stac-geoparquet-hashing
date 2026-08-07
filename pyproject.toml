@@ -1,0 +1,19 @@
+[project]
+name = "sgph"
+version = "0.1.0"
+description = "Hash and sort into stac-geoparquet"
+readme = "README.md"
+authors = [
+    { name = "Pete Gadomski", email = "pete.gadomski@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "typer>=0.27.1",
+]
+
+[project.scripts]
+sgph = "sgph:app"
+
+[build-system]
+requires = ["uv_build>=0.12.2,<0.13.0"]
+build-backend = "uv_build"
