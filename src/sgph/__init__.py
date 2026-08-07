@@ -1,65 +1,48 @@
-from io import BytesIO
+import datetime
 from pathlib import Path
 
-import httpx2
+import pandas
 import typer
-from obstore.auth.planetary_computer import PlanetaryComputerCredentialProvider
-from obstore.store import AzureStore
-from rich.progress import (
-    BarColumn,
-    DownloadColumn,
-    Progress,
-    TextColumn,
-    TimeRemainingColumn,
-    TransferSpeedColumn,
-)
+from stac_hash import Hasher
 
 app = typer.Typer()
 
 
 @app.command()
-def main(year: int, outdir: Path) -> None:
-    collection = (
-        httpx2.get(
-            "https://planetarycomputer.microsoft.com/api/stac/v1/collections/sentinel-2-l2a"
-        )
-        .raise_for_status()
-        .json()
+def hash(year: int, infile: Path, outfile: Path) -> None:
+    """Add a `hash:hash` column to the stac-geoparquet at `infile`.
+
+    Hashes are calculated over a whole-world bounding box and the temporal
+    extent of `year`, so hashes from different files are comparable.
+    """
+    data_frame = pandas.read_parquet(infile)
+    hasher = Hasher(
+        datetime.datetime(year, 1, 1, tzinfo=datetime.UTC),
+        datetime.datetime(year + 1, 1, 1, tzinfo=datetime.UTC),
     )
-    geoparquet_items = collection["assets"]["geoparquet-items"]
-    url = geoparquet_items["href"]
-    account_name = geoparquet_items["table:storage_options"]["account_name"]
-    store = AzureStore.from_url(
-        url,
-        account_name=account_name,
-        credential_provider=PlanetaryComputerCredentialProvider(
-            url, account_name=account_name
-        ),
+    longitudes, latitudes = bbox_centers(data_frame)
+    data_frame["hash:hash"] = hasher.hash_all(
+        datetimes(data_frame),
+        longitudes,
+        latitudes,
     )
-    paths = []
-    typer.echo(f"Collecting paths for {year}...", nl=False)
-    for list_result in store.list():
-        for object_meta in list_result:
-            if contains_year(object_meta["path"], year):
-                paths.append(object_meta["path"])
-    typer.echo(f"{len(paths)} found")
-
-    outdir.mkdir(exist_ok=True, parents=True)
-    for path in paths:
-        get_result = store.get(path)
-        with open(outdir / path, "wb") as f, Progress(
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            DownloadColumn(),
-            TransferSpeedColumn(),
-            TimeRemainingColumn(),
-        ) as progress:
-            task = progress.add_task(path, total=get_result.meta["size"])
-            for chunk in get_result:
-                f.write(chunk)
-                progress.update(task, advance=len(chunk))
+    data_frame.to_parquet(outfile)
 
 
-def contains_year(path: str, year: int) -> bool:
-    parts = path.split("_")
-    return parts[1].startswith(str(year)) or parts[2].startswith(str(year))
+def bbox_centers(data_frame: pandas.DataFrame) -> tuple[list[float], list[float]]:
+    bbox = pandas.DataFrame(data_frame["bbox"].tolist(), index=data_frame.index)
+    longitudes = (bbox["xmin"] + bbox["xmax"]) / 2
+    latitudes = (bbox["ymin"] + bbox["ymax"]) / 2
+    return longitudes.tolist(), latitudes.tolist()
+
+
+def datetimes(data_frame: pandas.DataFrame) -> list[datetime.datetime]:
+    values = data_frame["datetime"]
+    if "start_datetime" in data_frame and "end_datetime" in data_frame:
+        start = data_frame["start_datetime"]
+        end = data_frame["end_datetime"]
+        values = values.fillna(start + (end - start) / 2)
+    missing = int(values.isna().sum())
+    if missing:
+        raise ValueError(f"{missing} items have no datetime or start/end datetimes")
+    return values.dt.to_pydatetime().tolist()
