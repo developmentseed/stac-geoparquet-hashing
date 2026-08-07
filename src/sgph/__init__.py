@@ -15,13 +15,18 @@ def hash(year: int, infile: Path, outfile: Path) -> None:
     Hashes are calculated over a whole-world bounding box and the temporal
     extent of `year`, so hashes from different files are comparable.
     """
+    outfile.parent.mkdir(parents=True, exist_ok=True)
+    start_datetime = datetime.datetime(year, 1, 1, tzinfo=datetime.UTC)
+    end_datetime = datetime.datetime(year + 1, 1, 1, tzinfo=datetime.UTC)
     data_frame = pandas.read_parquet(infile)
+    data_frame["hash:start_datetime"] = start_datetime
+    data_frame["hash:end_datetime"] = end_datetime
     hasher = Hasher(
-        datetime.datetime(year, 1, 1, tzinfo=datetime.UTC),
-        datetime.datetime(year + 1, 1, 1, tzinfo=datetime.UTC),
+        start_datetime,
+        end_datetime,
     )
     longitudes, latitudes = bbox_centers(data_frame)
-    data_frame["hash:hash"] = hasher.hash_all(
+    data_frame["hash:hash"] = hasher.hash_all_clamped(
         datetimes(data_frame),
         longitudes,
         latitudes,

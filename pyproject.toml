@@ -11,7 +11,7 @@ dependencies = [
     "pandas>=3.0.5",
     "pyarrow>=25.0.0",
     "rustac>=0.9.16",
-    "stac-hash>=0.0.1",
+    "stac-hash>=0.0.2",
     "typer>=0.27.1",
 ]
 

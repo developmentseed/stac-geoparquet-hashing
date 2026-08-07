@@ -270,7 +270,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=3.0.5" },
     { name = "pyarrow", specifier = ">=25.0.0" },
     { name = "rustac", specifier = ">=0.9.16" },
-    { name = "stac-hash", specifier = ">=0.0.1" },
+    { name = "stac-hash", specifier = ">=0.0.2" },
     { name = "typer", specifier = ">=0.27.1" },
 ]
 
@@ -297,15 +297,15 @@ wheels = [
 
 [[package]]
 name = "stac-hash"
-version = "0.0.1"
+version = "0.0.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/8e/a4/61a96741250262c850a02b2358018aa58b38ad4a7f709d7551b1fd29357c/stac_hash-0.0.1.tar.gz", hash = "sha256:2add63a482c861d9836ae0c976930e66f8aaf8f2f7a518d8e5dbd04ccced606b", size = 14910, upload-time = "2026-08-07T18:56:00.016Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/54/2b/b0c9ae91bebc7b70e4e53ddaa4ebce0fe674db3b7b113e87fb2e3b4b7ffd/stac_hash-0.0.2.tar.gz", hash = "sha256:8347cbf450a4fed44a9fdd0f7ba05124f3c44693f1de3f1eeba3dad78f1995c0", size = 16239, upload-time = "2026-08-07T20:45:06.654Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/79/89/fa27afbccf9f626cc253c97b6e38c826a6c05ca926b3cca5df9a927bf57a/stac_hash-0.0.1-cp311-abi3-macosx_10_12_x86_64.whl", hash = "sha256:4320a132b521abd24e9377107e68dedaa010e029ea8b7b6f153c14fe1923d31e", size = 235174, upload-time = "2026-08-07T18:55:59.04Z" },
-    { url = "https://files.pythonhosted.org/packages/5f/0e/2252c390e87d1dd2e6d41b112b866b16e0bfd373d2e9540e782e6db9112b/stac_hash-0.0.1-cp311-abi3-macosx_11_0_arm64.whl", hash = "sha256:3ce722f3770e6ed4f77ad0804adc8521e7ca222525dcbe96a157c1a993d1d4e7", size = 235288, upload-time = "2026-08-07T18:55:57.753Z" },
-    { url = "https://files.pythonhosted.org/packages/8a/ef/34c03eb7d9bd423838aecc4d5c654416aca106f5aeb99a76dbdc98224388/stac_hash-0.0.1-cp311-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:431f71062b8828a97f6fbcc428d8bc35dcf3cbac635f562a6d7498d2c94c465e", size = 250733, upload-time = "2026-08-07T18:55:55.315Z" },
-    { url = "https://files.pythonhosted.org/packages/e1/4d/2de5475f1cb87d0e364e9c09579817d5e4d6d458c5dec8f29235c598688b/stac_hash-0.0.1-cp311-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f4dc57047fa560ae362791b2419fab53d62a085b7ff0fe3730292e753d816486", size = 260535, upload-time = "2026-08-07T18:55:56.449Z" },
-    { url = "https://files.pythonhosted.org/packages/a2/e6/14b4e68da03a1dbc6fce2aa806462ca5c3ff8ea687cffaf9dd6858304e04/stac_hash-0.0.1-cp311-abi3-win_amd64.whl", hash = "sha256:3a4eca3ca493c79993a70785a2372129b4642cafaed65928856b531c3003ad38", size = 156821, upload-time = "2026-08-07T18:56:00.798Z" },
+    { url = "https://files.pythonhosted.org/packages/a1/e6/00aadb9e39df6d92c2abe51c64f193ed4b8043c87ffc9bbf115a304f08fc/stac_hash-0.0.2-cp311-abi3-macosx_10_12_x86_64.whl", hash = "sha256:94e2873b28d3a8d43c53bdb7662511f396916d8eb332040698845948e4d34daa", size = 238592, upload-time = "2026-08-07T20:45:05.685Z" },
+    { url = "https://files.pythonhosted.org/packages/33/e9/a2e095054188d44271ae7086c476130f0d8f9d34ec5bfe0dd5d41c51540f/stac_hash-0.0.2-cp311-abi3-macosx_11_0_arm64.whl", hash = "sha256:98317968dccb6c454ca8210474afe79d4a6e44c259bf3f6772e8af186bcdab6e", size = 238933, upload-time = "2026-08-07T20:45:04.578Z" },
+    { url = "https://files.pythonhosted.org/packages/c5/45/df7e1ca63599e890cd22c5af6f9065591b21eedb13fe0ed74971fab06c42/stac_hash-0.0.2-cp311-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f987cf7062eaae7f74d4c693a915a4390efd11b612fbdf45c4b5fb8e97e07fb8", size = 255196, upload-time = "2026-08-07T20:45:02.207Z" },
+    { url = "https://files.pythonhosted.org/packages/de/8b/880cf6cc043e6e17d5ecec3a02f24cb0f6c8b9516206934960521dc0cfc5/stac_hash-0.0.2-cp311-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8ab99882e7b5555e11d64f5008681a911d54b986d5f45acc1a34a028411e7f72", size = 265644, upload-time = "2026-08-07T20:45:03.38Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/fe/5e40e827ae2c1db794c40f2c1c1b47254ad3fe9cc6c5ac8233a980c9ed89/stac_hash-0.0.2-cp311-abi3-win_amd64.whl", hash = "sha256:cfdc31d7f5f28c2348b3c9455e0e3b0720398d29fefa865a5b54a166ab7be14e", size = 161171, upload-time = "2026-08-07T20:45:07.347Z" },
 ]
 
 [[package]]
