@@ -8,3 +8,6 @@ dist/
 .ruff_cache/
 .mypy_cache/
 data/
+.tmp/
+sorted/
+.superpowers/

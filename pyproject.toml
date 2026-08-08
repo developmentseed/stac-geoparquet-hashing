@@ -8,8 +8,10 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "numpy>=2.0",
     "pandas>=3.0.5",
     "pyarrow>=25.0.0",
+    "rich>=15.0.0",
     "rustac>=0.9.16",
     "stac-hash>=0.0.2",
     "typer>=0.27.1",
@@ -25,4 +27,5 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "pandas-stubs>=3.0.5.260730",
+    "pytest>=8.0",
 ]
