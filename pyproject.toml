@@ -1,5 +1,5 @@
 [project]
-name = "sgph"
+name = "stac-geoparquet-hashing"
 version = "0.1.0"
 description = "Hash and sort into stac-geoparquet"
 readme = "README.md"
@@ -28,4 +28,5 @@ build-backend = "uv_build"
 dev = [
     "pandas-stubs>=3.0.5.260730",
     "pytest>=8.0",
+    "ruff>=0.16.3",
 ]

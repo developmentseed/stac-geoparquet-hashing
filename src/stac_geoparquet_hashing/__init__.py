@@ -10,8 +10,8 @@ from pyarrow.parquet import ParquetFile, ParquetWriter
 from rich.progress import Progress
 from stac_hash import Hasher
 
-from sgph import sort as sort_module
-from sgph.progress import progress_bar
+from . import sort as sort_module
+from .progress import progress_bar
 
 app = typer.Typer()
 

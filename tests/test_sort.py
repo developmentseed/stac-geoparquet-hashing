@@ -5,7 +5,7 @@ import numpy
 import pytest
 from pyarrow.parquet import ParquetFile
 
-from sgph import sort as sgph_sort
+from stac_geoparquet_hashing import sort as sgph_sort
 
 WriteHashed = Callable[[Path, str, numpy.ndarray], Path]
 
@@ -105,7 +105,7 @@ def test_with_bucket_keeps_equal_hashes_together(hashed_dir: Path) -> None:
 def test_stage_buckets_preserves_row_count(hashed_dir: Path, tmp_path: Path) -> None:
     from pyarrow.parquet import read_table
 
-    from sgph.progress import progress_bar
+    from stac_geoparquet_hashing.progress import progress_bar
 
     infiles = sorted(hashed_dir.glob("*.parquet"))
     boundaries = sgph_sort.bucket_boundaries(infiles, 8)
@@ -120,7 +120,7 @@ def test_stage_buckets_preserves_row_count(hashed_dir: Path, tmp_path: Path) -> 
 def test_staged_bucket_dirs_are_numerically_ordered(
     hashed_dir: Path, tmp_path: Path
 ) -> None:
-    from sgph.progress import progress_bar
+    from stac_geoparquet_hashing.progress import progress_bar
 
     infiles = sorted(hashed_dir.glob("*.parquet"))
     boundaries = sgph_sort.bucket_boundaries(infiles, 16)
@@ -134,7 +134,7 @@ def test_staged_bucket_dirs_are_numerically_ordered(
 def test_stage_buckets_is_sparse_for_identical_hashes(
     tmp_path: Path, write_hashed: WriteHashed
 ) -> None:
-    from sgph.progress import progress_bar
+    from stac_geoparquet_hashing.progress import progress_bar
 
     path = write_hashed(tmp_path / "d", "a.parquet", numpy.full(1000, 5))
     boundaries = sgph_sort.bucket_boundaries([path], 8)
@@ -158,7 +158,7 @@ def test_outfile_name_widens_beyond_a_thousand() -> None:
 def test_sort_bucket_sorts_and_keeps_metadata(hashed_dir: Path, tmp_path: Path) -> None:
     from pyarrow.parquet import read_table
 
-    from sgph.progress import progress_bar
+    from stac_geoparquet_hashing.progress import progress_bar
 
     infiles = sorted(hashed_dir.glob("*.parquet"))
     schema = ParquetFile(infiles[0]).schema_arrow
@@ -180,10 +180,9 @@ def test_sort_bucket_sorts_and_keeps_metadata(hashed_dir: Path, tmp_path: Path) 
 
 
 def test_sort_bucket_enforces_column_order(hashed_dir: Path, tmp_path: Path) -> None:
-    import pyarrow
     from pyarrow.parquet import ParquetWriter, read_table
 
-    from sgph.progress import progress_bar
+    from stac_geoparquet_hashing.progress import progress_bar
 
     infiles = sorted(hashed_dir.glob("*.parquet"))
     schema = ParquetFile(infiles[0]).schema_arrow
@@ -223,21 +222,22 @@ def read_all_hashes(outdir: Path) -> numpy.ndarray:
 
 
 def test_sort_produces_globally_sorted_output(hashed_dir: Path, tmp_path: Path) -> None:
-    import sgph
+    import stac_geoparquet_hashing
 
     outdir = tmp_path / "sorted"
-    sgph.sort_command(hashed_dir, outdir, buckets=8)
+    stac_geoparquet_hashing.sort_command(hashed_dir, outdir, buckets=8)
     hashes = read_all_hashes(outdir)
     assert len(hashes) == 15000
     assert numpy.all(hashes[:-1] <= hashes[1:])
 
 
 def test_sort_loses_no_ids(hashed_dir: Path, tmp_path: Path) -> None:
-    import sgph
     from pyarrow.parquet import read_table
 
+    import stac_geoparquet_hashing
+
     outdir = tmp_path / "sorted"
-    sgph.sort_command(hashed_dir, outdir, buckets=8)
+    stac_geoparquet_hashing.sort_command(hashed_dir, outdir, buckets=8)
     out_ids = set()
     for f in sorted(outdir.glob("*.parquet")):
         out_ids.update(read_table(f).column("id").to_pylist())
@@ -250,27 +250,29 @@ def test_sort_loses_no_ids(hashed_dir: Path, tmp_path: Path) -> None:
 def test_sort_names_outputs_contiguously_despite_sparse_buckets(
     tmp_path: Path, write_hashed: WriteHashed
 ) -> None:
-    import sgph
+    import stac_geoparquet_hashing
 
     write_hashed(tmp_path / "d", "a.parquet", numpy.full(1000, 5))
     outdir = tmp_path / "sorted"
-    sgph.sort_command(tmp_path / "d", outdir, buckets=8)
+    stac_geoparquet_hashing.sort_command(tmp_path / "d", outdir, buckets=8)
     assert [f.name for f in sorted(outdir.glob("*.parquet"))] == ["part-000.parquet"]
 
 
 def test_sort_removes_staging_dir_on_success(hashed_dir: Path, tmp_path: Path) -> None:
-    import sgph
+    import stac_geoparquet_hashing
 
     staging = tmp_path / "staging"
     staging.mkdir()
-    sgph.sort_command(hashed_dir, tmp_path / "sorted", buckets=8, staging_dir=staging)
+    stac_geoparquet_hashing.sort_command(
+        hashed_dir, tmp_path / "sorted", buckets=8, staging_dir=staging
+    )
     assert list(staging.iterdir()) == []
 
 
 def test_sort_removes_staging_dir_on_failure(
     hashed_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    import sgph
+    import stac_geoparquet_hashing
 
     def boom(*args: object, **kwargs: object) -> None:
         raise RuntimeError("boom")
@@ -279,25 +281,26 @@ def test_sort_removes_staging_dir_on_failure(
     staging = tmp_path / "staging"
     staging.mkdir()
     with pytest.raises(RuntimeError):
-        sgph.sort_command(
+        stac_geoparquet_hashing.sort_command(
             hashed_dir, tmp_path / "sorted", buckets=8, staging_dir=staging
         )
     assert list(staging.iterdir()) == []
 
 
 def test_sort_raises_on_empty_indir(tmp_path: Path) -> None:
-    import sgph
+    import stac_geoparquet_hashing
 
     empty = tmp_path / "empty"
     empty.mkdir()
     with pytest.raises(ValueError):
-        sgph.sort_command(empty, tmp_path / "sorted")
+        stac_geoparquet_hashing.sort_command(empty, tmp_path / "sorted")
 
 
 def test_sort_raises_when_hash_column_missing(tmp_path: Path) -> None:
     import pyarrow
-    import sgph
     from pyarrow.parquet import ParquetWriter
+
+    import stac_geoparquet_hashing
 
     indir = tmp_path / "d"
     indir.mkdir()
@@ -305,28 +308,30 @@ def test_sort_raises_when_hash_column_missing(tmp_path: Path) -> None:
     with ParquetWriter(indir / "a.parquet", table.schema) as writer:
         writer.write_table(table)
     with pytest.raises(ValueError):
-        sgph.sort_command(indir, tmp_path / "sorted")
+        stac_geoparquet_hashing.sort_command(indir, tmp_path / "sorted")
 
 
 def test_sort_raises_on_stale_output_files(hashed_dir: Path, tmp_path: Path) -> None:
-    import sgph
+    import stac_geoparquet_hashing
 
     outdir = tmp_path / "sorted"
-    sgph.sort_command(hashed_dir, outdir, buckets=16)
+    stac_geoparquet_hashing.sort_command(hashed_dir, outdir, buckets=16)
     before = sorted(outdir.glob("part-*.parquet"))
     assert len(before) > 4
     with pytest.raises(ValueError):
-        sgph.sort_command(hashed_dir, outdir, buckets=4)
+        stac_geoparquet_hashing.sort_command(hashed_dir, outdir, buckets=4)
     after = sorted(outdir.glob("part-*.parquet"))
     assert after == before
 
 
-def test_sort_force_deletes_stale_output_files(hashed_dir: Path, tmp_path: Path) -> None:
-    import sgph
+def test_sort_force_deletes_stale_output_files(
+    hashed_dir: Path, tmp_path: Path
+) -> None:
+    import stac_geoparquet_hashing
 
     outdir = tmp_path / "sorted"
-    sgph.sort_command(hashed_dir, outdir, buckets=16)
-    sgph.sort_command(hashed_dir, outdir, buckets=4, force=True)
+    stac_geoparquet_hashing.sort_command(hashed_dir, outdir, buckets=16)
+    stac_geoparquet_hashing.sort_command(hashed_dir, outdir, buckets=4, force=True)
     hashes = read_all_hashes(outdir)
     assert len(sorted(outdir.glob("part-*.parquet"))) <= 4
     assert len(hashes) == 15000
@@ -336,16 +341,16 @@ def test_sort_force_deletes_stale_output_files(hashed_dir: Path, tmp_path: Path)
 def test_sort_command_raises_for_non_positive_buckets(
     hashed_dir: Path, tmp_path: Path
 ) -> None:
-    import sgph
+    import stac_geoparquet_hashing
 
     with pytest.raises(ValueError):
-        sgph.sort_command(hashed_dir, tmp_path / "sorted", buckets=0)
+        stac_geoparquet_hashing.sort_command(hashed_dir, tmp_path / "sorted", buckets=0)
 
 
 def test_sort_handles_extreme_int64_hashes(
     tmp_path: Path, write_hashed: WriteHashed
 ) -> None:
-    import sgph
+    import stac_geoparquet_hashing
 
     hashes = numpy.array(
         [
@@ -362,7 +367,7 @@ def test_sort_handles_extreme_int64_hashes(
     )
     write_hashed(tmp_path / "d", "a.parquet", hashes)
     outdir = tmp_path / "sorted"
-    sgph.sort_command(tmp_path / "d", outdir, buckets=8)
+    stac_geoparquet_hashing.sort_command(tmp_path / "d", outdir, buckets=8)
     out_hashes = read_all_hashes(outdir)
     assert len(out_hashes) == len(hashes)
     assert numpy.all(out_hashes[:-1] <= out_hashes[1:])
