@@ -1,6 +1,6 @@
 # DuckDB GeoParquet Benchmarks
 
-This benchmark workflow compares direct DuckDB queries over three local GeoParquet layouts:
+This benchmark workflow compares direct DuckDB queries over three GeoParquet layouts, both from local files and directly from Source Cooperative S3:
 
 | Dataset | Description |
 | --- | --- |
@@ -8,7 +8,7 @@ This benchmark workflow compares direct DuckDB queries over three local GeoParqu
 | `hashed_128_files` | Hashed GeoParquet layout from Source Cooperative. |
 | `hashed_12_files` | Hashed GeoParquet layout rewritten into 12 files, matching the Microsoft file count. |
 
-The benchmark is local-first so query timings do not include network latency.
+The first benchmark matrix is local-first so query timings do not include network latency. The notebook also includes a remote object-store matrix that uses the same layouts over S3 so timings include object-store listing, network latency, and HTTP range reads.
 
 ## Setup
 
@@ -36,6 +36,16 @@ The notebook measures:
 - grouped monthly aggregation
 - latest items for a collection
 - specific id lookup and scoped id lookup
+
+## Remote Object-Store Run
+
+The notebook defines `REMOTE_DATASETS` with `s3://` paths under `us-west-2.opendata.source.coop/developmentseed/stac-geoparquet`. DuckDB uses the `httpfs` extension and an unsigned public S3 secret for those reads.
+
+Keep the local and remote result tables separate when interpreting performance:
+
+- local results isolate Parquet layout and sort effects from network behavior
+- remote results show the end-to-end behavior a client sees against object storage
+- compare `remote_microsoft` against `remote_hashed_12_files` for the closest real-world file-count match
 
 ## Interpretation
 
