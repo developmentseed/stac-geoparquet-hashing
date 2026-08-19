@@ -2,19 +2,21 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DEST_DIR="${1:-${ROOT_DIR}/data/benchmarks/source}"
+SOURCE_DEST_DIR="${1:-${ROOT_DIR}/data/benchmarks/source}"
+GENERATED_DEST_DIR="${2:-${ROOT_DIR}/data/benchmarks/generated}"
 
 BUCKET="us-west-2.opendata.source.coop"
 PREFIX="developmentseed/stac-geoparquet"
 ENDPOINT_URL="https://s3.us-west-2.amazonaws.com"
 REGION="us-west-2"
 
-mkdir -p "${DEST_DIR}"
+mkdir -p "${SOURCE_DEST_DIR}" "${GENERATED_DEST_DIR}"
 
 sync_prefix() {
     local name="$1"
+    local dest_dir="${2:-${SOURCE_DEST_DIR}}"
     local source="s3://${BUCKET}/${PREFIX}/${name}/"
-    local dest="${DEST_DIR}/${name}/"
+    local dest="${dest_dir}/${name}/"
 
     mkdir -p "${dest}"
     aws s3 sync "${source}" "${dest}" \
@@ -26,5 +28,6 @@ sync_prefix() {
 
 sync_prefix "mspc-sentinel-2-l2a"
 sync_prefix "mspc-sentinel-2-l2a-sorted"
+sync_prefix "mspc-sentinel-2-l2a-sorted-12-files" "${GENERATED_DEST_DIR}"
 
-find "${DEST_DIR}" -name '*.parquet' -print | sort
+find "${SOURCE_DEST_DIR}" "${GENERATED_DEST_DIR}" -name '*.parquet' -print | sort

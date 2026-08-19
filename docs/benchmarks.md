@@ -6,7 +6,7 @@ This benchmark workflow compares direct DuckDB queries over three local GeoParqu
 | --- | --- |
 | `microsoft` | Microsoft Planetary Computer GeoParquet layout from Source Cooperative. |
 | `hashed_128_files` | Hashed GeoParquet layout from Source Cooperative. |
-| `hashed_12_files` | Local rewrite of the hashed layout into 12 files, matching the Microsoft file count. |
+| `hashed_12_files` | Hashed GeoParquet layout rewritten into 12 files, matching the Microsoft file count. |
 
 The benchmark is local-first so query timings do not include network latency.
 
@@ -14,12 +14,11 @@ The benchmark is local-first so query timings do not include network latency.
 
 ```sh
 scripts/sync-benchmark-data.sh
-scripts/generate-file-count-matched-geoparquet.sh
 uv sync --group notebook
 uv run --group notebook jupyter lab notebooks/duckdb-geoparquet-benchmarks.ipynb
 ```
 
-Downloaded and generated data lives under `data/`, which is ignored by git.
+Downloaded and generated data lives under `data/`, which is ignored by git. Run `scripts/generate-file-count-matched-geoparquet.sh` if you want to rebuild the 12-file hashed layout locally.
 
 ## Queries
 
