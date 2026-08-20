@@ -12,7 +12,7 @@ uv sync --group notebook
 uv run --group notebook jupyter lab notebooks/duckdb-geoparquet-benchmarks.ipynb
 ```
 
-Run `scripts/generate-file-count-matched-geoparquet.sh` if you want to rebuild the 12-file hashed layout locally.
+Run `scripts/generate-file-count-matched-geoparquet.sh` directly if you want to rebuild the 12-file hashed layout with custom inputs.
 
 The benchmark data is written under `data/`, which is ignored by git.
 

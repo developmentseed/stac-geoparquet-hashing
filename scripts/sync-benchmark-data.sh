@@ -28,6 +28,9 @@ sync_prefix() {
 
 sync_prefix "mspc-sentinel-2-l2a"
 sync_prefix "mspc-sentinel-2-l2a-sorted"
-sync_prefix "mspc-sentinel-2-l2a-sorted-12-files" "${GENERATED_DEST_DIR}"
+
+"${ROOT_DIR}/scripts/generate-file-count-matched-geoparquet.sh" \
+    "${SOURCE_DEST_DIR}/mspc-sentinel-2-l2a-sorted" \
+    "${GENERATED_DEST_DIR}/mspc-sentinel-2-l2a-sorted-12-files"
 
 find "${SOURCE_DEST_DIR}" "${GENERATED_DEST_DIR}" -name '*.parquet' -print | sort

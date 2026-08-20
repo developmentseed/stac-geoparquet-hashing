@@ -1,0 +1,483 @@
+[
+  {
+    "dataset": "remote_microsoft",
+    "query": "q01_full_dataset_count",
+    "rows": 5031349,
+    "best_seconds": 2.5980673750163987,
+    "median_seconds": 2.93973854201613,
+    "runs": [
+      2.93973854201613,
+      2.5980673750163987,
+      5.059504584001843
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_microsoft",
+    "query": "q02_time_range_count",
+    "rows": 459093,
+    "best_seconds": 3.6310575410025194,
+    "median_seconds": 3.9620115410070866,
+    "runs": [
+      6.576295541017316,
+      3.6310575410025194,
+      3.9620115410070866
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_microsoft",
+    "query": "q03_bbox_count",
+    "rows": 8842,
+    "best_seconds": 71.00248224998359,
+    "median_seconds": 72.00305491697509,
+    "runs": [
+      78.22380241699284,
+      72.00305491697509,
+      71.00248224998359
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_microsoft",
+    "query": "q04_stac_search_count",
+    "rows": 783,
+    "best_seconds": 12.009947666025255,
+    "median_seconds": 12.213529583008494,
+    "runs": [
+      12.747876665991498,
+      12.213529583008494,
+      12.009947666025255
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_microsoft",
+    "query": "q06_search_page_datetime_order",
+    "rows": 100,
+    "best_seconds": 7.90934720801306,
+    "median_seconds": 8.738074166001752,
+    "runs": [
+      10.89185841701692,
+      7.90934720801306,
+      8.738074166001752
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_microsoft",
+    "query": "q07_attribute_filter",
+    "rows": 488,
+    "best_seconds": 14.309264125011396,
+    "median_seconds": 14.672340249991976,
+    "runs": [
+      14.309264125011396,
+      15.268644333002158,
+      14.672340249991976
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_microsoft",
+    "query": "q08_exact_geometry_intersects",
+    "rows": 783,
+    "best_seconds": 10.640445208002347,
+    "median_seconds": 11.367901291989256,
+    "runs": [
+      11.367901291989256,
+      13.92731641701539,
+      10.640445208002347
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_microsoft",
+    "query": "q09_grouped_aggregation",
+    "rows": 13,
+    "best_seconds": 52.62246983300429,
+    "median_seconds": 54.336930207995465,
+    "runs": [
+      55.31786170799751,
+      54.336930207995465,
+      52.62246983300429
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_microsoft",
+    "query": "q10_collection_latest_items",
+    "rows": 100,
+    "best_seconds": 26.315647000010358,
+    "median_seconds": 28.150243124982808,
+    "runs": [
+      33.430640666978434,
+      28.150243124982808,
+      26.315647000010358
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_microsoft",
+    "query": "q11_specific_id_lookup",
+    "rows": 1,
+    "best_seconds": 25.975422750023426,
+    "median_seconds": 26.39116704199114,
+    "runs": [
+      26.39116704199114,
+      25.975422750023426,
+      26.439722457987955
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_microsoft",
+    "query": "q11_scoped_id_lookup",
+    "rows": 1,
+    "best_seconds": 38.56896937501733,
+    "median_seconds": 38.63812583399704,
+    "runs": [
+      39.64526879097684,
+      38.56896937501733,
+      38.63812583399704
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q01_full_dataset_count",
+    "rows": 5031349,
+    "best_seconds": 4.091397083015181,
+    "median_seconds": 4.376748459006194,
+    "runs": [
+      6.4091379580204375,
+      4.376748459006194,
+      4.091397083015181
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q02_time_range_count",
+    "rows": 459093,
+    "best_seconds": 4.8745555829955265,
+    "median_seconds": 4.919652417011093,
+    "runs": [
+      5.09051045801607,
+      4.919652417011093,
+      4.8745555829955265
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q03_bbox_count",
+    "rows": 8842,
+    "best_seconds": 5.284141791984439,
+    "median_seconds": 5.294267958001001,
+    "runs": [
+      5.294267958001001,
+      5.310789332987042,
+      5.284141791984439
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q04_stac_search_count",
+    "rows": 783,
+    "best_seconds": 4.515743708005175,
+    "median_seconds": 4.67764295800589,
+    "runs": [
+      5.08586579200346,
+      4.515743708005175,
+      4.67764295800589
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q05_hash_range_search",
+    "rows": 783,
+    "best_seconds": 4.391118792002089,
+    "median_seconds": 4.490072833024897,
+    "runs": [
+      4.935513333010022,
+      4.490072833024897,
+      4.391118792002089
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q06_search_page_datetime_order",
+    "rows": 100,
+    "best_seconds": 4.4842661670118105,
+    "median_seconds": 4.545145166019211,
+    "runs": [
+      5.183136207982898,
+      4.4842661670118105,
+      4.545145166019211
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q06_search_page_hash_order",
+    "rows": 100,
+    "best_seconds": 4.501911125000333,
+    "median_seconds": 4.659922499995446,
+    "runs": [
+      4.659922499995446,
+      4.6851282499847,
+      4.501911125000333
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q07_attribute_filter",
+    "rows": 488,
+    "best_seconds": 4.070318917016266,
+    "median_seconds": 4.365493000019342,
+    "runs": [
+      4.365493000019342,
+      4.5168592919944786,
+      4.070318917016266
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q08_exact_geometry_intersects",
+    "rows": 783,
+    "best_seconds": 4.683900292002363,
+    "median_seconds": 4.846160207991488,
+    "runs": [
+      4.859368041012203,
+      4.846160207991488,
+      4.683900292002363
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q09_grouped_aggregation",
+    "rows": 13,
+    "best_seconds": 7.326468916988233,
+    "median_seconds": 7.999093082995387,
+    "runs": [
+      9.9592438749969,
+      7.999093082995387,
+      7.326468916988233
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q10_collection_latest_items",
+    "rows": 100,
+    "best_seconds": 5.525501958007226,
+    "median_seconds": 5.722617166989949,
+    "runs": [
+      5.762108749971958,
+      5.722617166989949,
+      5.525501958007226
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q11_specific_id_lookup",
+    "rows": 1,
+    "best_seconds": 7.408601041010115,
+    "median_seconds": 7.684417000011308,
+    "runs": [
+      7.684417000011308,
+      7.408601041010115,
+      7.946973833983066
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_128_files",
+    "query": "q11_scoped_id_lookup",
+    "rows": 1,
+    "best_seconds": 8.179514457995538,
+    "median_seconds": 8.310529500013217,
+    "runs": [
+      8.418673458014382,
+      8.310529500013217,
+      8.179514457995538
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q01_full_dataset_count",
+    "rows": 5031349,
+    "best_seconds": 0.7410873330081813,
+    "median_seconds": 0.7971037079987582,
+    "runs": [
+      1.0254504999902565,
+      0.7971037079987582,
+      0.7410873330081813
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q02_time_range_count",
+    "rows": 459093,
+    "best_seconds": 1.087655667011859,
+    "median_seconds": 1.0940502079902217,
+    "runs": [
+      1.2505561250145547,
+      1.0940502079902217,
+      1.087655667011859
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q03_bbox_count",
+    "rows": 8842,
+    "best_seconds": 1.4446687499876134,
+    "median_seconds": 1.4833354169968516,
+    "runs": [
+      1.6466933339834213,
+      1.4833354169968516,
+      1.4446687499876134
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q04_stac_search_count",
+    "rows": 783,
+    "best_seconds": 1.5438806660240516,
+    "median_seconds": 1.6487769590166863,
+    "runs": [
+      1.6487769590166863,
+      1.7284187089826446,
+      1.5438806660240516
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q05_hash_range_search",
+    "rows": 783,
+    "best_seconds": 0.9995220840210095,
+    "median_seconds": 1.2122278749884572,
+    "runs": [
+      1.2122278749884572,
+      1.5884279169840738,
+      0.9995220840210095
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q06_search_page_datetime_order",
+    "rows": 100,
+    "best_seconds": 1.5180437920207623,
+    "median_seconds": 1.5477224579954054,
+    "runs": [
+      1.5664264590013772,
+      1.5477224579954054,
+      1.5180437920207623
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q06_search_page_hash_order",
+    "rows": 100,
+    "best_seconds": 1.5914606250007637,
+    "median_seconds": 1.6446577499737032,
+    "runs": [
+      1.5914606250007637,
+      1.6446577499737032,
+      1.8783765409898479
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q07_attribute_filter",
+    "rows": 488,
+    "best_seconds": 1.6305553750135005,
+    "median_seconds": 1.6514201250101905,
+    "runs": [
+      1.7304033330001403,
+      1.6514201250101905,
+      1.6305553750135005
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q08_exact_geometry_intersects",
+    "rows": 783,
+    "best_seconds": 1.246925666986499,
+    "median_seconds": 1.5985702920006588,
+    "runs": [
+      2.4108197500172537,
+      1.5985702920006588,
+      1.246925666986499
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q09_grouped_aggregation",
+    "rows": 13,
+    "best_seconds": 2.0327347080165055,
+    "median_seconds": 2.2131634580146056,
+    "runs": [
+      2.886767709016567,
+      2.2131634580146056,
+      2.0327347080165055
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q10_collection_latest_items",
+    "rows": 100,
+    "best_seconds": 2.3241491250228137,
+    "median_seconds": 2.346077750000404,
+    "runs": [
+      2.562942499993369,
+      2.346077750000404,
+      2.3241491250228137
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q11_specific_id_lookup",
+    "rows": 1,
+    "best_seconds": 2.0912349999998696,
+    "median_seconds": 2.1962063329992816,
+    "runs": [
+      2.1962063329992816,
+      2.2649862079997547,
+      2.0912349999998696
+    ],
+    "duckdb_version": "1.5.5"
+  },
+  {
+    "dataset": "remote_hashed_12_files",
+    "query": "q11_scoped_id_lookup",
+    "rows": 1,
+    "best_seconds": 2.742461749992799,
+    "median_seconds": 2.815297041001031,
+    "runs": [
+      2.815297041001031,
+      2.742461749992799,
+      2.866683334024856
+    ],
+    "duckdb_version": "1.5.5"
+  }
+]

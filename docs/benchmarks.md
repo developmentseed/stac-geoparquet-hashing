@@ -18,7 +18,7 @@ uv sync --group notebook
 uv run --group notebook jupyter lab notebooks/duckdb-geoparquet-benchmarks.ipynb
 ```
 
-Downloaded and generated data lives under `data/`, which is ignored by git. Run `scripts/generate-file-count-matched-geoparquet.sh` if you want to rebuild the 12-file hashed layout locally.
+Downloaded and generated data lives under `data/`, which is ignored by git. The sync script rebuilds the 12-file hashed layout from the synced hashed source so the dataset row counts stay equivalent. Run `scripts/generate-file-count-matched-geoparquet.sh` directly if you want to rebuild it with custom inputs.
 
 ## Queries
 
