@@ -1,10 +1,17 @@
 # stac-geoparquet-hashing
 
-WIP
+Given one or more **stac-geoparquet** files, re-write them into spatio-temporal-optimized **stac-geoparquet** by sorting them by their [**stac-hash**](https://www.gadom.ski/stac-hash/).
+Optionally, prefix item ids by their hash value, drastically improving the performance of single-id searches against the **stac-geoparquet**.
 
-## DuckDB GeoParquet Benchmarks
+## Usage
 
-Benchmark DuckDB queries against the Microsoft GeoParquet layout, the hashed 128-file layout, and a generated hashed 12-file layout:
+TODO
+
+## Benchmarks
+
+We've done some benchmarking against files retrieved from the [Microsoft Planetary Computer](https://planetarycomputer.microsoft.com/).
+To see the results, check out [notebooks/duckdb-geoparquet-benchmarks.ipynb](notebooks/duckdb-geoparquet-benchmarks.ipynb).
+Since they involve many remote queries the benchmarks take a while to run, but if you'd like to run them yourself:
 
 ```sh
 scripts/sync-benchmark-data.sh
@@ -12,8 +19,6 @@ uv sync --group notebook
 uv run --group notebook jupyter lab notebooks/duckdb-geoparquet-benchmarks.ipynb
 ```
 
-Run `scripts/generate-file-count-matched-geoparquet.sh` directly if you want to rebuild the 12-file hashed layout with custom inputs.
+## License
 
-The benchmark data is written under `data/`, which is ignored by git.
-
-The notebook also includes a remote Source Cooperative S3 benchmark matrix for real-world object-store timings.
+[MIT](LICENSE)

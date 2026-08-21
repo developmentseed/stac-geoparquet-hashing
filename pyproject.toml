@@ -3,6 +3,7 @@ name = "stac-geoparquet-hashing"
 version = "0.1.0"
 description = "Hash and sort into stac-geoparquet"
 readme = "README.md"
+license = "MIT"
 authors = [
     { name = "Pete Gadomski", email = "pete.gadomski@gmail.com" }
 ]
