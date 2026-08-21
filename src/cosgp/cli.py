@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import logging
 from pathlib import Path
 from typing import Annotated
 
@@ -112,6 +113,12 @@ def create(
             help="Target uncompressed size, in bytes, for each sorted output file. The number of hash buckets is estimated from the total input data volume so that each bucket is roughly this size."
         ),
     ] = DEFAULT_BUCKET_SIZE,
+    progress: Annotated[
+        bool,
+        Option(
+            help="Show a progress bar. If disabled, progress is logged at INFO level instead."
+        ),
+    ] = True,
 ) -> None:
     """Creates one or more cloud-optimized stac-geoparquet files.
 
@@ -121,10 +128,16 @@ def create(
         2. Stage each item into "bucketed" datasets, partitioned by hash value
         3. Internally sort each partitioned dataset, then write the output files
     """
+    if not progress:
+        logging.basicConfig(level=logging.INFO, format="%(message)s")
     infiles = [infile] if infile.is_file() else list(infile.glob("*.parquet"))
     if not infiles:
         raise ValueError(f"no parquet files in {infile}")
-    Runner(temporary_directory=temporary_directory, bucket_size=bucket_size).run(
+    Runner(
+        temporary_directory=temporary_directory,
+        bucket_size=bucket_size,
+        progress=progress,
+    ).run(
         infiles=infiles,
         start_datetime=datetime.start,
         end_datetime=datetime.end,

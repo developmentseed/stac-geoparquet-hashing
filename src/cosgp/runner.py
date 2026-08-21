@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 import math
 import shutil
 import tempfile
@@ -19,6 +20,8 @@ from rich.progress import Progress, TaskID
 from stac_hash import Hasher
 
 from .progress import progress_bar
+
+logger = logging.getLogger(__name__)
 
 BBox = tuple[float, float, float, float]
 
@@ -104,6 +107,8 @@ class Runner:
             task = self.progress.add_task(
                 f"hashing {len(infiles)} files", total=len(infiles)
             )
+        else:
+            logger.info("hashing %d files", len(infiles))
         hash_directory = self.temporary_directory / "hashing"
         shutil.rmtree(hash_directory, ignore_errors=True)
         hash_directory.mkdir(parents=True)
@@ -144,6 +149,8 @@ class Runner:
                 self.progress.remove_task(file_task)
             if self.progress and task is not None:
                 self.progress.advance(task)
+            if not self.progress:
+                logger.info("hashed %s", infile.name)
         if self.progress and task is not None:
             self.progress.remove_task(task)
 
@@ -168,6 +175,8 @@ class Runner:
             task = self.progress.add_task(
                 f"staging {len(hashes)} items", total=len(hashes)
             )
+        else:
+            logger.info("staging %d items into %d buckets", len(hashes), num_buckets)
         pyarrow.dataset.write_dataset(
             staging_buckets(infiles, boundaries, self.progress, task),
             staging_directory,
@@ -183,6 +192,8 @@ class Runner:
         )
         if self.progress and task is not None:
             self.progress.remove_task(task)
+        else:
+            logger.info("staged %d buckets", len(directories))
         return directories
 
     def sort(self, directories: list[Path], schema: Schema, outdir: Path) -> None:
@@ -191,6 +202,8 @@ class Runner:
             task = self.progress.add_task(
                 f"sorting {len(directories)} files", total=len(directories)
             )
+        else:
+            logger.info("sorting %d files", len(directories))
         for index, bucket_directory in enumerate(directories):
             table = (
                 pyarrow.parquet.read_table(bucket_directory)
@@ -210,6 +223,8 @@ class Runner:
             shutil.rmtree(bucket_directory)
             if self.progress and task is not None:
                 self.progress.advance(task)
+            else:
+                logger.info("sorted %s (%d/%d)", file_name, index + 1, len(directories))
 
 
 def hashed_schema(schema: Schema, has_bbox: bool) -> Schema:
@@ -291,5 +306,5 @@ def staging_buckets(
                 pyarrow.array(buckets, pyarrow.int32()),
             )
             yield from table.to_batches()
-            if progress and task:
+            if progress and task is not None:
                 progress.advance(task, advance=batch.num_rows)
