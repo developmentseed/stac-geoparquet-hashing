@@ -219,7 +219,6 @@ class Runner:
                 writer.write_table(
                     table.sort_by("hash:hash"), row_group_size=self.row_group_size
                 )
-            # TODO write
             shutil.rmtree(bucket_directory)
             if self.progress and task is not None:
                 self.progress.advance(task)
