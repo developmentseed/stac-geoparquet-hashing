@@ -133,6 +133,7 @@ def create(
     infiles = [infile] if infile.is_file() else list(infile.glob("*.parquet"))
     if not infiles:
         raise ValueError(f"no parquet files in {infile}")
+    outdir.mkdir(parents=True, exist_ok=True)
     Runner(
         temporary_directory=temporary_directory,
         bucket_size=bucket_size,
