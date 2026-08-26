@@ -42,5 +42,8 @@ notebooks = [
 [tool.basedpyright]
 typeCheckingMode = "standard"
 
+[tool.ruff]
+extend-exclude = ["notebooks"]
+
 [tool.uv]
 default-groups = ["dev", "notebooks"]
