@@ -8,7 +8,6 @@ from rich.progress import (
 
 
 def progress_bar() -> Progress:
-    """Returns the `Progress` bar used by every `sgph` command."""
     return Progress(
         TextColumn("[progress.description]{task.description}"),
         BarColumn(),

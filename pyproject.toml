@@ -1,7 +1,7 @@
 [project]
-name = "stac-geoparquet-hashing"
+name = "cosgp"
 version = "0.1.0"
-description = "Hash and sort into stac-geoparquet"
+description = "Create cloud-optimized stac-geoparquet"
 readme = "README.md"
 license = "MIT"
 authors = [
@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [project.scripts]
-sgph = "sgph:app"
+cosgp = "cosgp.cli:app"
 
 [build-system]
 requires = ["uv_build>=0.12.2,<0.13.0"]
@@ -27,13 +27,23 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "basedpyright>=1.39.10",
     "pandas-stubs>=3.0.5.260730",
     "pytest>=8.0",
     "ruff>=0.16.3",
 ]
-notebook = [
+notebooks = [
     "duckdb>=1.3",
     "ipykernel>=6.29",
     "jupyterlab>=4.4",
     "pytz>=2025.2",
 ]
+
+[tool.basedpyright]
+typeCheckingMode = "standard"
+
+[tool.ruff]
+extend-exclude = ["notebooks"]
+
+[tool.uv]
+default-groups = ["dev", "notebooks"]
