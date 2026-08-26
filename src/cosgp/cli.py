@@ -137,6 +137,7 @@ def create(
         temporary_directory=temporary_directory,
         bucket_size=bucket_size,
         progress=progress,
+        prefix_id=prefix_id,
     ).run(
         infiles=infiles,
         start_datetime=datetime.start,

@@ -56,12 +56,14 @@ class Runner:
         progress: bool = True,
         compression: str = "zstd",
         row_group_size: int = DEFAULT_ROW_GROUP_SIZE,
+        prefix_id: bool = False,
     ) -> None:
         self.bucket_size = bucket_size
         self.temporary_directory = temporary_directory or Path(tempfile.mkdtemp())
         self.progress: Progress | None
         self.compression = compression
         self.row_group_size = row_group_size
+        self.prefix_id = prefix_id
         if progress:
             self.progress = progress_bar()
         else:
@@ -138,7 +140,12 @@ class Runner:
                     ).total_byte_size
                     table = parquet_infile.read_row_group(row_group)
                     table, table_hashes = hashed_table(
-                        table, hasher, start_datetime, end_datetime, bbox
+                        table,
+                        hasher,
+                        start_datetime,
+                        end_datetime,
+                        bbox,
+                        self.prefix_id,
                     )
                     hashes.extend(table_hashes)
                     writer.write_table(table)
@@ -248,6 +255,7 @@ def hashed_table(
     start_datetime: datetime.datetime,
     end_datetime: datetime.datetime,
     bbox: BBox | None,
+    prefix_id: bool,
 ) -> tuple[Table, list[int]]:
     datetimes = table.select(["datetime"]).to_pandas()
     if "start_datetime" in table.column_names and "end_datetime" in table.column_names:
@@ -269,8 +277,17 @@ def hashed_table(
     hashes = hasher.hash_all_clamped(
         datetimes["datetime"].tolist(), longitudes.tolist(), latitudes.tolist()
     )
-    # FIXME handle bbox
-    return (
+    if prefix_id:
+        prefixed_ids = [
+            f"{hash_value:016x}-{id_value}"
+            for hash_value, id_value in zip(hashes, table.column("id").to_pylist())
+        ]
+        table = table.set_column(
+            table.column_names.index("id"),
+            table.field("id"),
+            pyarrow.array(prefixed_ids, pyarrow.string()),
+        )
+    table = (
         table.append_column(
             pyarrow.field("hash:hash", pyarrow.uint64()),
             pyarrow.array(hashes, pyarrow.uint64()),
@@ -282,9 +299,19 @@ def hashed_table(
         .append_column(
             pyarrow.field("hash:end_datetime", TIMESTAMP),
             pyarrow.array(pyarrow.array([end_datetime] * table.num_rows), TIMESTAMP),
-        ),
-        hashes,
+        )
     )
+    if bbox is not None:
+        minx, miny, maxx, maxy = bbox
+        table = table.append_column(
+            pyarrow.field("hash:bbox", BBOX),
+            pyarrow.array(
+                [{"minx": minx, "miny": miny, "maxx": maxx, "maxy": maxy}]
+                * table.num_rows,
+                BBOX,
+            ),
+        )
+    return table, hashes
 
 
 def staging_buckets(
