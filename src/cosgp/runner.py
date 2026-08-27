@@ -123,8 +123,16 @@ class Runner:
         hashes = []
         total_bytes = 0
         schema: Schema | None = None
+        file_metadata: dict[bytes, bytes] | None = None
         for infile in infiles:
             parquet_infile = ParquetFile(infile)
+            if file_metadata is None:
+                file_metadata = parquet_infile.schema_arrow.metadata
+            elif parquet_infile.schema_arrow.metadata != file_metadata:
+                raise ValueError(
+                    f"file-level metadata of {infile} does not match "
+                    f"the metadata of {infiles[0]}"
+                )
             schema = hashed_schema(parquet_infile.schema_arrow, bbox is not None)
             outfile = hash_directory / infile.name
             outfiles.append(outfile)
