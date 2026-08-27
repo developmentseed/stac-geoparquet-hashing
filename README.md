@@ -1,4 +1,4 @@
-# stac-geoparquet-hashing
+# cloud-optimized-stac-geoparquet
 
 Given one or more **stac-geoparquet** files, re-write them into spatio-temporal-optimized **stac-geoparquet** by sorting them by their [**stac-hash**](https://www.gadom.ski/stac-hash/).
 Optionally, prefix item ids by their hash value, drastically improving the performance of single-id searches against the **stac-geoparquet**.
