@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import json
 import logging
 import math
 import shutil
@@ -11,6 +12,7 @@ from pathlib import Path
 
 import numpy
 import pyarrow
+import pyarrow.compute
 import pyarrow.dataset
 import pyarrow.parquet
 from pandas import DataFrame
@@ -36,6 +38,7 @@ BBOX = pyarrow.struct(
 )
 BUCKET = pyarrow.field("bucket", pyarrow.int32())
 DEFAULT_ROW_GROUP_SIZE = 150_000
+DEFAULT_BUCKET_SIZE = 2_000_000_000  # 2 GB of uncompressed data per output file
 
 
 @dataclass
@@ -51,12 +54,13 @@ class Runner:
 
     def __init__(
         self,
-        bucket_size: int,
+        bucket_size: int = DEFAULT_BUCKET_SIZE,
         temporary_directory: Path | None = None,
         progress: bool = True,
         compression: str = "zstd",
         row_group_size: int = DEFAULT_ROW_GROUP_SIZE,
         prefix_id: bool = False,
+        match_file_count: bool = False,
     ) -> None:
         self.bucket_size = bucket_size
         self.temporary_directory = temporary_directory or Path(tempfile.mkdtemp())
@@ -64,6 +68,7 @@ class Runner:
         self.compression = compression
         self.row_group_size = row_group_size
         self.prefix_id = prefix_id
+        self.match_file_count = match_file_count
         if progress:
             self.progress = progress_bar()
         else:
@@ -126,14 +131,19 @@ class Runner:
         file_metadata: dict[bytes, bytes] | None = None
         for infile in infiles:
             parquet_infile = ParquetFile(infile)
+            infile_metadata = file_level_metadata(parquet_infile)
             if file_metadata is None:
-                file_metadata = parquet_infile.schema_arrow.metadata
-            elif parquet_infile.schema_arrow.metadata != file_metadata:
+                file_metadata = infile_metadata
+            elif metadata_for_comparison(infile_metadata) != metadata_for_comparison(
+                file_metadata
+            ):
                 raise ValueError(
                     f"file-level metadata of {infile} does not match "
                     f"the metadata of {infiles[0]}"
                 )
-            schema = hashed_schema(parquet_infile.schema_arrow, bbox is not None)
+            schema = hashed_schema(
+                parquet_infile.schema_arrow, bbox is not None, file_metadata
+            )
             outfile = hash_directory / infile.name
             outfiles.append(outfile)
             file_task: TaskID | None = None
@@ -177,7 +187,10 @@ class Runner:
     ) -> list[Path]:
         keys = numpy.array(hashes, dtype=numpy.uint64)
         keys.sort()
-        num_buckets = max(1, math.ceil(total_bytes / self.bucket_size))
+        if self.match_file_count:
+            num_buckets = len(infiles)
+        else:
+            num_buckets = max(1, math.ceil(total_bytes / self.bucket_size))
         boundaries = numpy.unique(
             keys[[(i * len(keys) // num_buckets) for i in range(1, num_buckets)]]
         )
@@ -228,8 +241,11 @@ class Runner:
             file_name = (
                 f"part-{index:0{max(3, len(str(len(directories) - 1)))}d}.parquet"
             )
+            file_schema = schema.with_metadata(
+                recompute_geo_bbox(schema.metadata, table)
+            )
             with ParquetWriter(
-                outdir / file_name, schema, compression=self.compression
+                outdir / file_name, file_schema, compression=self.compression
             ) as writer:
                 writer.write_table(
                     table.sort_by("hash:hash"), row_group_size=self.row_group_size
@@ -241,7 +257,48 @@ class Runner:
                 logger.info("sorted %s (%d/%d)", file_name, index + 1, len(directories))
 
 
-def hashed_schema(schema: Schema, has_bbox: bool) -> Schema:
+def file_level_metadata(parquet_file: ParquetFile) -> dict[bytes, bytes] | None:
+    metadata = parquet_file.metadata.metadata
+    if metadata is None:
+        return None
+    return {key: value for key, value in metadata.items() if key != b"ARROW:schema"}
+
+
+def metadata_for_comparison(
+    metadata: dict[bytes, bytes] | None,
+) -> dict[bytes, bytes] | None:
+    """Strips the GeoParquet "geo" bbox, which legitimately varies per file."""
+    if metadata is None or b"geo" not in metadata:
+        return metadata
+    geo = json.loads(metadata[b"geo"])
+    for column in geo.get("columns", {}).values():
+        column.pop("bbox", None)
+    return {**metadata, b"geo": json.dumps(geo, sort_keys=True).encode()}
+
+
+def recompute_geo_bbox(
+    metadata: dict[bytes, bytes] | None, table: Table
+) -> dict[bytes, bytes] | None:
+    """Replaces the GeoParquet "geo" bbox with the actual extent of `table`."""
+    if metadata is None or b"geo" not in metadata:
+        return metadata
+    geo = json.loads(metadata[b"geo"])
+    column = geo.get("columns", {}).get(geo.get("primary_column"))
+    if column is None or "bbox" not in column:
+        return metadata
+    bbox_column = table.column("bbox")
+    column["bbox"] = [
+        pyarrow.compute.min(pyarrow.compute.struct_field(bbox_column, "xmin")).as_py(),  # pyright: ignore[reportAttributeAccessIssue]
+        pyarrow.compute.min(pyarrow.compute.struct_field(bbox_column, "ymin")).as_py(),  # pyright: ignore[reportAttributeAccessIssue]
+        pyarrow.compute.max(pyarrow.compute.struct_field(bbox_column, "xmax")).as_py(),  # pyright: ignore[reportAttributeAccessIssue]
+        pyarrow.compute.max(pyarrow.compute.struct_field(bbox_column, "ymax")).as_py(),  # pyright: ignore[reportAttributeAccessIssue]
+    ]
+    return {**metadata, b"geo": json.dumps(geo).encode()}
+
+
+def hashed_schema(
+    schema: Schema, has_bbox: bool, metadata: dict[bytes, bytes] | None
+) -> Schema:
     hash_columns = ["hash:hash", "hash:start_datetime", "hash:end_datetime"]
     hash_fields = [
         pyarrow.field("hash:hash", pyarrow.uint64()),
@@ -253,7 +310,7 @@ def hashed_schema(schema: Schema, has_bbox: bool) -> Schema:
         hash_fields.append(pyarrow.field("hash:bbox", BBOX))
     return pyarrow.schema(
         [field for field in schema if field.name not in hash_columns] + hash_fields,
-        metadata=schema.metadata,
+        metadata=metadata,
     )
 
 

@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.0.1
-      - name: Install dependencies
-        run: uv sync --only-group dev
       - name: Lint
-        run: uv run ruff check .
+        run: |
+          uv run ruff check .
+          uv run basedpyright
       - name: Check formatting
         run: uv run ruff format --check .
       - name: Test

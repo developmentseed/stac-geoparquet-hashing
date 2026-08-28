@@ -3,6 +3,8 @@
 Given one or more **stac-geoparquet** files, re-write them into spatio-temporal-optimized **stac-geoparquet** by sorting them by their [**stac-hash**](https://www.gadom.ski/stac-hash/).
 Optionally, prefix item ids by their hash value, drastically improving the performance of single-id searches against the **stac-geoparquet**.
 
+This tool formats **stac-geoparquet** files per the [best practices](https://github.com/radiantearth/stac-geoparquet-spec/blob/main/docs/best-practices.md).
+
 ## Usage
 
 Install dependencies and run the `cosgp` CLI via [uv](https://docs.astral.sh/uv/):

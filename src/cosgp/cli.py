@@ -7,12 +7,9 @@ from typing import Annotated
 
 from typer import Argument, Option, Typer
 
-from .runner import BBox, Runner
+from .runner import DEFAULT_BUCKET_SIZE, BBox, Runner
 
 app = Typer()
-
-
-DEFAULT_BUCKET_SIZE = 2_000_000_000  # 2 GB of uncompressed data per output file
 
 
 class Datetime:
@@ -113,6 +110,12 @@ def create(
             help="Target uncompressed size, in bytes, for each sorted output file. The number of hash buckets is estimated from the total input data volume so that each bucket is roughly this size."
         ),
     ] = DEFAULT_BUCKET_SIZE,
+    match_file_count: Annotated[
+        bool,
+        Option(
+            help="Produce the same number of output files as input files instead of sizing them by bucket-size. Useful for testing the effects of sorting in isolation from resizing. Overrides bucket-size."
+        ),
+    ] = False,
     progress: Annotated[
         bool,
         Option(
@@ -139,6 +142,7 @@ def create(
         bucket_size=bucket_size,
         progress=progress,
         prefix_id=prefix_id,
+        match_file_count=match_file_count,
     ).run(
         infiles=infiles,
         start_datetime=datetime.start,

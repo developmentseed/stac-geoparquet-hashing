@@ -41,6 +41,7 @@ notebooks = [
 
 [tool.basedpyright]
 typeCheckingMode = "standard"
+include = ["src", "tests"]
 
 [tool.ruff]
 extend-exclude = ["notebooks"]
